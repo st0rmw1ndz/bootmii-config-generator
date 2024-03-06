@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
-          bin: explicitag
+          bin: bootmii_config_generator
           tar: unix
           zip: windows
           token: ${{ secrets.TOKEN }}
