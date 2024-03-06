@@ -1,7 +1,12 @@
 [package]
 name = "bootmii-config-generator"
-version = "0.1.0"
+version = "0.1.1"
+authors = ["frosty <inthishouseofcards@gmail.com>"]
 edition = "2021"
+description = "Tool to generate a BootMii configuration file for your Wii."
+readme = "README.md"
+repository = "https://github.com/st0rm1wndz/bootmii-config-generator"
+license-file = "LICENSE"
 
 [dependencies]
 dialoguer = "0.11.0"
