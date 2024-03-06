@@ -6,7 +6,7 @@ use crate::models::{AutoBoot, ConfigGenerator, VideoMode};
 mod interaction;
 mod models;
 
-fn main() {
+fn main() -> eyre::Result<()> {
     let video_mode_selection = select_from_enum::<VideoMode>("Please choose a video mode")?;
     let selected_video_mode = VideoMode::iter().nth(video_mode_selection).unwrap();
 
@@ -14,27 +14,19 @@ fn main() {
     let selected_auto_boot = AutoBoot::iter().nth(auto_boot_selection).unwrap();
 
     let auto_boot_delay = if selected_auto_boot != AutoBoot::NONE {
-        match input_with_range("Please enter an autoboot delay", 5, 0..=10) {
-            Ok(input) => Some(input),
-            Err(e) => {
-                log::error!("{}", e);
-                return;
-            }
-        }
+        Some(input_with_range(
+            "Please enter an autoboot delay",
+            5,
+            0..=10,
+        )?)
     } else {
         None
     };
 
-    let sd_card_path = match string_input(
+    let sd_card_path = string_input(
         "Please enter the path of your SD card (leave empty for current directory)",
         String::from(""),
-    ) {
-        Ok(path) => path,
-        Err(e) => {
-            log::error!("Error getting SD card path: {}", e);
-            return;
-        }
-    };
+    )?;
 
     let config_generator = ConfigGenerator::new(
         selected_video_mode,
@@ -43,8 +35,7 @@ fn main() {
         sd_card_path,
     );
     let conf = config_generator.generate_ini();
-    if let Err(e) = config_generator.write_to_file(conf) {
-        log::error!("{}", e);
-        return;
-    };
+    config_generator.write_to_file(conf)?;
+
+    Ok(())
 }

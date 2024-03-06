@@ -3,6 +3,7 @@
 use std::env;
 use std::path::PathBuf;
 
+use eyre::eyre;
 use ini::Ini;
 use strum_macros::{Display, EnumIter, EnumString};
 
@@ -55,6 +56,7 @@ impl ConfigGenerator {
                     .set("BOOTDELAY", format!("{:?}", auto_boot_delay));
             }
         }
+
         conf
     }
 
@@ -63,16 +65,18 @@ impl ConfigGenerator {
             let mut path = PathBuf::from(&self.sd_card_path);
             path.push("bootmii");
             if !path.exists() {
-                return Err(eyre::Report::msg(
-                    "The directory 'bootmii' does not exist at the provided SD card path.",
+                return Err(eyre!(
+                    "'bootmii' directory does not exist at the provided SD card path",
                 ));
             }
+
             path
         } else {
             env::current_dir()?
         };
         file_path.push("bootmii.ini");
         conf.write_to_file(file_path)?;
+
         Ok(())
     }
 }
